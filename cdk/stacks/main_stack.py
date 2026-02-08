@@ -9,6 +9,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 from .web_app_stack import WebAppStack
+from .lex_bot_stack import LexBotStack
 # Import other nested stacks here as you add them
 # from .database_stack import DatabaseStack
 # from .api_stack import ApiStack
@@ -21,6 +22,7 @@ class ProjectMainStack(Stack):
 
     This stack creates and coordinates multiple nested stacks:
     - Web App Stack (Chat Widget Lambda + Function URL)
+    - Lex Bot Stack (Amazon Lex Yes/No Question Bot)
     - [Future] Database Stack (RDS, DynamoDB, etc.)
     - [Future] API Stack (API Gateway, additional Lambdas)
     - [Future] Monitoring Stack (CloudWatch Dashboards, Alarms)
@@ -60,7 +62,18 @@ class ProjectMainStack(Stack):
         )
 
         # ═══════════════════════════════════════════════════════════
-        # NESTED STACK 2: Database (Example - Uncomment to add)
+        # NESTED STACK 2: Lex Bot (Yes/No Question Bot)
+        # ═══════════════════════════════════════════════════════════
+        self.lex_bot_stack = LexBotStack(
+            self,
+            "LexBotStack",
+            environment_name=environment_name,
+            lex_config=config.get("lex_bot_config", {}),
+            description=f"Lex Bot: Yes/No Question Handler - {environment_name}",
+        )
+
+        # ═══════════════════════════════════════════════════════════
+        # NESTED STACK 3: Database (Example - Uncomment to add)
         # ═══════════════════════════════════════════════════════════
         # self.database_stack = DatabaseStack(
         #     self,
@@ -71,7 +84,7 @@ class ProjectMainStack(Stack):
         # )
 
         # ═══════════════════════════════════════════════════════════
-        # NESTED STACK 3: API Layer (Example - Uncomment to add)
+        # NESTED STACK 4: API Layer (Example - Uncomment to add)
         # ═══════════════════════════════════════════════════════════
         # self.api_stack = ApiStack(
         #     self,
@@ -84,7 +97,7 @@ class ProjectMainStack(Stack):
         # )
 
         # ═══════════════════════════════════════════════════════════
-        # NESTED STACK 4: Monitoring (Example - Uncomment to add)
+        # NESTED STACK 5: Monitoring (Example - Uncomment to add)
         # ═══════════════════════════════════════════════════════════
         # self.monitoring_stack = MonitoringStack(
         #     self,
@@ -133,6 +146,28 @@ class ProjectMainStack(Stack):
             "WebAppFunctionName",
             value=self.web_app_stack.chat_widget_function.function_name,
             description="Lambda function name for the web app",
+        )
+
+        # Lex Bot outputs
+        CfnOutput(
+            self,
+            "LexBotId",
+            value=self.lex_bot_stack.bot_id,
+            description="Lex Bot ID for Yes/No questions",
+        )
+
+        CfnOutput(
+            self,
+            "LexBotAliasId",
+            value=self.lex_bot_stack.bot_alias_id,
+            description="Lex Bot Alias ID",
+        )
+
+        CfnOutput(
+            self,
+            "LexBotName",
+            value=self.lex_bot_stack.bot_name,
+            description="Lex Bot Name",
         )
 
         # Add outputs from other nested stacks as you create them

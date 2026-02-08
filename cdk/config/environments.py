@@ -125,6 +125,14 @@ ENVIRONMENTS = {
         },
         "enable_cors": True,
         "cors_allowed_origins": ["*"],
+        # ─── Lex Bot Configuration ──────────────────────────────
+        "lex_bot_config": {
+            "question_text": "Would you like to continue with your request?",
+            "alias_name": "prod",
+            "idle_session_timeout": 300,  # 5 minutes
+            "enable_confirmation": False,  # Set to True to ask for confirmation
+            "enable_conversation_logs": True,  # CloudWatch conversation logs
+        },
     },
     "staging": {
         "stack_name_suffix": "Staging",
@@ -154,6 +162,14 @@ ENVIRONMENTS = {
         },
         "enable_cors": True,
         "cors_allowed_origins": ["https://staging.example.com"],
+        # ─── Lex Bot Configuration ──────────────────────────────
+        "lex_bot_config": {
+            "question_text": "Would you like to continue with your request?",
+            "alias_name": "prod",
+            "idle_session_timeout": 300,
+            "enable_confirmation": False,
+            "enable_conversation_logs": True,
+        },
     },
     "prod": {
         "stack_name_suffix": "Prod",
@@ -183,6 +199,14 @@ ENVIRONMENTS = {
         },
         "enable_cors": True,
         "cors_allowed_origins": ["https://www.tridentunitedway.org", "https://tridentunitedway.org"],
+        # ─── Lex Bot Configuration ──────────────────────────────
+        "lex_bot_config": {
+            "question_text": "Would you like to continue with your request?",
+            "alias_name": "prod",
+            "idle_session_timeout": 600,  # 10 minutes for production
+            "enable_confirmation": True,  # Enable confirmation in production
+            "enable_conversation_logs": True,
+        },
     },
 
     # ═══════════════════════════════════════════════════════════════════════
