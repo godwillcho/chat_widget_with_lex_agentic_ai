@@ -1,0 +1,6 @@
+# Python dependencies for the Chat Widget Lambda function
+# Currently uses only standard library modules - no external dependencies required
+
+# Add any external dependencies below if needed in the future:
+# requests==2.31.0
+# boto3==1.34.0

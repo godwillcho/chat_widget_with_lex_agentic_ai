@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip:*)",
+      "Bash(export CDK_DEFAULT_ACCOUNT:*)",
+      "Bash(export CDK_DEFAULT_REGION=us-west-2:*)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:/c/Users/godwi/AppData/Roaming/npm:$PATH\")",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" \"C:\\\\Users\\\\godwi\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\aws-cdk\\\\bin\\\\cdk\" --version)",
+      "Bash(powershell.exe:*)",
+      "Bash(export CDK_ENVIRONMENT=dev)",
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" \"C:\\\\Users\\\\godwi\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\aws-cdk\\\\bin\\\\cdk\" bootstrap aws://551642657889/us-west-2)",
+      "Bash(cmd.exe:*)",
+      "Bash(cdk deploy:*)",
+      "Bash(cdk destroy:*)",
+      "Bash(aws logs tail:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(npx cdk deploy:*)",
+      "Bash(pip install:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:repost.aws)",
+      "Bash(npm:*)",
+      "Bash(node --version:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
