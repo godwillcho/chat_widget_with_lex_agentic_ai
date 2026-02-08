@@ -181,6 +181,272 @@ def mobile_css() -> str:
 </style>"""
 
 
+def form_styling_css() -> str:
+    """Professional CSS styling for Amazon Connect forms passed from Show view block."""
+    return """
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   PROFESSIONAL FORM STYLING FOR AMAZON CONNECT VIEWS
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Form Container */
+.connect-view-form,
+[class*="Form_"],
+[data-testid*="form"] {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin: 16px 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Form Headers */
+.connect-view-form h1,
+.connect-view-form h2,
+.connect-view-form h3,
+[class*="Header_"] h1,
+[class*="Header_"] h2,
+[class*="Header_"] h3 {
+    color: #10264a !important;
+    font-family: 'Open Sans', -apple-system, sans-serif !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+    line-height: 1.3 !important;
+}
+
+.connect-view-form h2,
+[class*="Header_"] h2 {
+    font-size: 1.5rem !important;
+}
+
+/* Form Header Descriptions */
+.connect-view-form [class*="description"],
+[class*="Header_"] [class*="description"],
+[class*="Header_"] p {
+    color: #6b7280 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+/* Form Input Groups */
+.connect-view-form [class*="FormInput"],
+.connect-view-form .form-group,
+[class*="FormInput_"] {
+    margin-bottom: 18px !important;
+}
+
+/* Form Labels */
+.connect-view-form label,
+[class*="FormInput_"] label,
+[class*="Label_"] {
+    display: block !important;
+    color: #374151 !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 6px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+/* Required Field Indicator */
+.connect-view-form label[required]::after,
+[class*="FormInput_"][class*="required"] label::after {
+    content: " *" !important;
+    color: #dc2626 !important;
+}
+
+/* Input Fields */
+.connect-view-form input[type="text"],
+.connect-view-form input[type="email"],
+.connect-view-form input[type="tel"],
+.connect-view-form input[type="number"],
+.connect-view-form textarea,
+.connect-view-form select,
+[class*="FormInput_"] input,
+[class*="FormInput_"] textarea,
+[class*="FormInput_"] select {
+    width: 100% !important;
+    padding: 11px 14px !important;
+    font-size: 0.95rem !important;
+    font-family: 'Open Sans', sans-serif !important;
+    color: #1f2937 !important;
+    background: #ffffff !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+}
+
+/* Input Focus State */
+.connect-view-form input:focus,
+.connect-view-form textarea:focus,
+.connect-view-form select:focus,
+[class*="FormInput_"] input:focus,
+[class*="FormInput_"] textarea:focus,
+[class*="FormInput_"] select:focus {
+    outline: none !important;
+    border-color: #10264a !important;
+    box-shadow: 0 0 0 3px rgba(16, 38, 74, 0.1) !important;
+}
+
+/* Input Hover State */
+.connect-view-form input:hover,
+.connect-view-form textarea:hover,
+.connect-view-form select:hover,
+[class*="FormInput_"] input:hover,
+[class*="FormInput_"] textarea:hover,
+[class*="FormInput_"] select:hover {
+    border-color: #9ca3af !important;
+}
+
+/* Input Error State */
+.connect-view-form input[aria-invalid="true"],
+.connect-view-form textarea[aria-invalid="true"],
+.connect-view-form select[aria-invalid="true"],
+[class*="error"] input,
+[class*="invalid"] input {
+    border-color: #dc2626 !important;
+    background: #fef2f2 !important;
+}
+
+/* Error Messages */
+.connect-view-form .error-message,
+.connect-view-form [class*="error"],
+[class*="ErrorMessage_"],
+[role="alert"] {
+    color: #dc2626 !important;
+    font-size: 0.85rem !important;
+    margin-top: 4px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+/* Submit/Action Buttons */
+.connect-view-form button[type="submit"],
+.connect-view-form [class*="ConnectAction"],
+[class*="ConnectAction_"] button,
+[class*="SubmitButton_"] {
+    width: 100% !important;
+    padding: 14px 24px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    font-family: 'Open Sans', sans-serif !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #10264a 0%, #1a3a6b 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(16, 38, 74, 0.25) !important;
+    margin-top: 8px !important;
+}
+
+/* Button Hover State */
+.connect-view-form button[type="submit"]:hover,
+[class*="ConnectAction_"] button:hover {
+    background: linear-gradient(135deg, #1a3a6b 0%, #10264a 100%) !important;
+    box-shadow: 0 6px 16px rgba(16, 38, 74, 0.35) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Button Active/Pressed State */
+.connect-view-form button[type="submit"]:active,
+[class*="ConnectAction_"] button:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(16, 38, 74, 0.3) !important;
+}
+
+/* Button Disabled State */
+.connect-view-form button[type="submit"]:disabled,
+[class*="ConnectAction_"] button:disabled {
+    background: #9ca3af !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    opacity: 0.6 !important;
+}
+
+/* Checkbox and Radio Inputs */
+.connect-view-form input[type="checkbox"],
+.connect-view-form input[type="radio"],
+[class*="FormInput_"] input[type="checkbox"],
+[class*="FormInput_"] input[type="radio"] {
+    width: auto !important;
+    margin-right: 8px !important;
+    cursor: pointer !important;
+}
+
+/* Help Text / Field Hints */
+.connect-view-form .help-text,
+.connect-view-form [class*="hint"],
+[class*="HelpText_"] {
+    color: #6b7280 !important;
+    font-size: 0.85rem !important;
+    margin-top: 4px !important;
+    font-style: italic !important;
+}
+
+/* Form Sections/Fieldsets */
+.connect-view-form fieldset,
+[class*="FormSection_"] {
+    border: none !important;
+    padding: 0 !important;
+    margin: 20px 0 !important;
+}
+
+.connect-view-form legend {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #10264a !important;
+    margin-bottom: 12px !important;
+}
+
+/* Placeholder Text */
+.connect-view-form input::placeholder,
+.connect-view-form textarea::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+    .connect-view-form,
+    [class*="Form_"] {
+        padding: 18px !important;
+    }
+
+    .connect-view-form h2,
+    [class*="Header_"] h2 {
+        font-size: 1.3rem !important;
+    }
+
+    .connect-view-form button[type="submit"],
+    [class*="ConnectAction_"] button {
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* Loading State */
+.connect-view-form.loading,
+[class*="Form_"][class*="loading"] {
+    opacity: 0.6 !important;
+    pointer-events: none !important;
+}
+
+/* Success State */
+.connect-view-form.success,
+[class*="Form_"][class*="success"] {
+    border: 2px solid #10b981 !important;
+    background: #f0fdf4 !important;
+}
+
+/* Professional spacing and alignment */
+.connect-view-form > * + * {
+    margin-top: 16px !important;
+}
+</style>"""
+
+
 def get_enhancements() -> list:
     """
     Get all enhancements for the current view mode.
@@ -188,7 +454,10 @@ def get_enhancements() -> list:
     Returns:
         List of enhancement strings (scripts and styles) to inject.
     """
-    enhancements = [custom_styles_script()]
+    enhancements = [
+        custom_styles_script(),
+        form_styling_css()  # Add professional form styling
+    ]
 
     if IS_KIOSK:
         enhancements.extend([
