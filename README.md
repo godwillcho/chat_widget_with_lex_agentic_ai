@@ -1,6 +1,6 @@
 # 211 Chat Widget with Lex Agentic AI
 
-An AWS CDK-based infrastructure project that deploys an **Amazon Connect** chat widget integrated with **Amazon Lex V2** conversational AI. Built for **Trident United Way's 211 Helpline**, providing a production-ready, serverless chat interface with multi-environment support.
+An AWS CDK-based infrastructure project that deploys an **Amazon Connect** chat widget integrated with **Amazon Lex V2** conversational AI. Provides a production-ready, serverless chat interface with multi-environment support.
 
 ## Architecture
 
@@ -191,4 +191,4 @@ Override at runtime via URL: `https://your-function-url/?mode=kiosk`
 
 ## License
 
-Private — Trident United Way
+Private
