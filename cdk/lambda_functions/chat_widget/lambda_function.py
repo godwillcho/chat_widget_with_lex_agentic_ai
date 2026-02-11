@@ -60,6 +60,11 @@ def _resolve_mode(event: dict) -> tuple:
 
 
 def lambda_handler(event, context):
+    """Handle incoming Lambda requests - returns HTML page with Amazon Connect chat widget or JWT token."""
+    # ══════════════════════════════════════════════════════════════════
+    # Serve HTML page with widget
+    # ══════════════════════════════════════════════════════════════════
+    # Resolve view mode for this request
     mode, source = _resolve_mode(event)
 
     # Set env so config.py reads it on import, then clear after render

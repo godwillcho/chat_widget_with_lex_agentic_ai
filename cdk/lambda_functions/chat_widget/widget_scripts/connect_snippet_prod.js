@@ -1,16 +1,25 @@
 <script type="text/javascript">
-    // TODO: Replace with your production Amazon Connect widget script
-    // Get this from: Amazon Connect Console → Channels → Chat widgets → Your widget → "Show security key"
-    // Copy the entire <script>...</script> block and paste it here
+  (function(w, d, x, id){
+    s=d.createElement('script');
+    s.src='https://nextgencxsolutions.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
+    s.async=1;
+    s.id=id;
+    d.getElementsByTagName('head')[0].appendChild(s);
+    w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
+  })(window, document, 'amazon_connect', 'cba73f0d-a749-4cb2-9e0e-2510043f48ac');
 
-    (function(w, d, x, id){
-        s=d.createElement('script');
-        s.src='https://YOUR-INSTANCE.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
-        s.async=1;
-        s.id=id;
-        d.getElementsByTagName('head')[0].appendChild(s);
-        w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
-    })(window, document, 'amazon_connect', 'YOUR-WIDGET-ID-HERE');
-    amazon_connect('snippetId', 'YOUR-SNIPPET-ID-HERE');
-    amazon_connect('supportedMessagingContentTypes', [ 'text/plain', 'text/markdown' ]);
+  amazon_connect('styles', {
+    iconType: 'CHAT',
+    openChat: { color: '#ffffff', backgroundColor: '#123456' },
+    closeChat: { color: '#ffffff', backgroundColor: '#123456'}
+  });
+
+  amazon_connect('snippetId', 'QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=');
+
+  amazon_connect('supportedMessagingContentTypes', [
+    'text/plain',
+    'text/markdown',
+    'application/vnd.amazonaws.connect.message.interactive',
+    'application/vnd.amazonaws.connect.message.interactive.response'
+  ]);
 </script>

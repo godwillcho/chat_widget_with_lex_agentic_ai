@@ -18,16 +18,19 @@ chat_widget/
 
 ## 🔧 Architecture
 
-### 1. **widget.py** - Base Widget Generator
-- **Purpose**: Generates Amazon Connect widget snippet using environment variables
-- **Dynamic Generation**: Snippet is created at runtime using config values
-- **No static files**: All credentials come from Lambda environment variables
+### 1. **widget.py** - Base Widget Loader
+- **Purpose**: Loads environment-specific Amazon Connect widget snippet from files
+- **Environment-based**: Automatically loads correct file based on ENVIRONMENT variable
+- **Static widget files**: Widget scripts stored in `widget_scripts/` directory
+  - `connect_snippet_dev.js` - Development environment
+  - `connect_snippet_staging.js` - Staging environment
+  - `connect_snippet_prod.js` - Production environment
 
 **Key Function:**
 ```python
 def _generate_base_snippet() -> str:
-    """Generate base Amazon Connect snippet from env vars."""
-    # Uses CONNECT_URL, WIDGET_ID, SNIPPET_ID from config.py
+    """Load environment-specific Amazon Connect snippet from file."""
+    # Loads connect_snippet_{environment}.js
 ```
 
 ### 2. **widget_enhancements.py** - Custom Enhancements
@@ -82,16 +85,19 @@ The widget supports three view modes (configured via `?mode=` parameter or envir
 
 ## 🔄 Configuration Management
 
-### Environment Variables (Lambda Configuration)
+### Environment-Specific Widget Files
 
-All credentials and settings are managed through Lambda environment variables, which are set during CDK deployment from [../../config/environments.py](../../config/environments.py):
+Widget credentials are managed in environment-specific files in `widget_scripts/`:
 
-**Required:**
-- `CONNECT_URL` - Amazon Connect instance URL
-- `WIDGET_ID` - Widget ID (UUID)
-- `SNIPPET_ID` - Encrypted snippet ID (base64 string)
+**Widget Script Files:**
+- `connect_snippet_dev.js` - Development environment widget
+- `connect_snippet_staging.js` - Staging environment widget
+- `connect_snippet_prod.js` - Production environment widget
 
-**Optional:**
+**Environment Variables (Lambda Configuration):**
+Set during CDK deployment from [../../config/environments.py](../../config/environments.py):
+
+**Optional Branding:**
 - `COMPANY_NAME` - Organization name (default: "Trident United Way")
 - `COLOR_NAVY` - Primary color (default: "#10264a")
 - `COLOR_GOLD` - Secondary color (default: "#f5a623")
@@ -99,28 +105,19 @@ All credentials and settings are managed through Lambda environment variables, w
 - `WIDGET_HEADER` - Widget header text (default: "211 Helpline")
 - `WIDGET_BOT_NAME` - Bot display name (default: "211 Specialist")
 
-### Updating Credentials
+### Updating Widget Code
 
-**Method: Edit config/environments.py**
+**Method: Update widget script files directly**
 
-1. **Edit configuration file:**
-   ```bash
-   # Open config/environments.py
-   # Update the environment you want to deploy
-   ```
+1. **Get widget script from Amazon Connect:**
+   - AWS Console → Amazon Connect → Channels → Chat widgets
+   - Select your widget → **Show security key**
+   - Copy the entire `<script>...</script>` block
 
-2. **Update credentials:**
-   ```python
-   "dev": {
-       "widget_config": {
-           "COMPANY_NAME": "Your Organization",
-           "CONNECT_URL": "https://your-instance.my.connect.aws",
-           "WIDGET_ID": "your-widget-id-uuid",
-           "SNIPPET_ID": "your-base64-snippet-id",
-           # ... other settings
-       }
-   }
-   ```
+2. **Update the appropriate file:**
+   - Development: `widget_scripts/connect_snippet_dev.js`
+   - Staging: `widget_scripts/connect_snippet_staging.js`
+   - Production: `widget_scripts/connect_snippet_prod.js`
 
 3. **Redeploy:**
    ```bash
@@ -129,16 +126,7 @@ All credentials and settings are managed through Lambda environment variables, w
    cdk deploy -c environment=dev --require-approval never
    ```
 
-### Getting Amazon Connect Credentials
-
-1. **AWS Console** → **Amazon Connect** → Your Instance
-2. Click **Channels** → **Chat widgets**
-3. Select your widget → **Show security key**
-4. Copy widget code snippet
-5. Extract values:
-   - **CONNECT_URL**: From `s.src='https://YOUR-INSTANCE.my.connect.aws/...'`
-   - **WIDGET_ID**: From `'amazon_connect', 'WIDGET-ID-HERE'`
-   - **SNIPPET_ID**: From `amazon_connect('snippetId', 'LONG-BASE64-STRING')`
+See [widget_scripts/README.md](widget_scripts/README.md) for detailed instructions.
 
 ## 🚀 Deployment
 
@@ -153,20 +141,22 @@ See [../../README.md](../../README.md) for deployment instructions.
 
 ## 🏗️ Architecture Benefits
 
-### ✅ Centralized Configuration
-- All credentials in one place (config/environments.py)
-- Easy to manage multiple environments
-- No hardcoded credentials in code
+### ✅ Environment-Specific Configuration
+- Separate widget files for dev, staging, prod
+- Easy to manage multiple environments and organizations
+- Simple file-based approach - just paste widget snippet from Amazon Connect
 
-### ✅ Dynamic Snippet Generation
-- Snippet generated at runtime from environment variables
-- No static files to maintain
-- Credentials stay in CDK configuration
-
-### ✅ Modular Enhancements
-- Custom styles isolated in widget_enhancements.py
-- Easy to modify appearance and behavior
+### ✅ Modular Widget Structure
+- Base Amazon Connect snippet loaded from environment-specific files
+- Custom enhancements isolated in widget_enhancements.py
+- Easy to update widget when Amazon Connect releases updates
 - Clear separation between base widget and customizations
+
+### ✅ Flexible Enhancements
+- Custom styles (colors, fonts, sizing)
+- Custom behaviors (auto-open, auto-reset)
+- View-specific CSS (kiosk, mobile positioning)
+- Easy to modify without touching Amazon Connect code
 
 ### ✅ View Mode Flexibility
 - Switch modes via URL parameter
@@ -177,8 +167,8 @@ See [../../README.md](../../README.md) for deployment instructions.
 ## 🔍 Troubleshooting
 
 ### Widget shows "Something went wrong"
-**Cause**: Invalid Amazon Connect credentials
-**Fix**: Update CONNECT_URL, WIDGET_ID, SNIPPET_ID in config/environments.py and redeploy
+**Cause**: Invalid Amazon Connect credentials in widget script file
+**Fix**: Update the environment-specific widget script file (connect_snippet_dev.js, etc.) with fresh snippet from Amazon Connect console and redeploy
 
 ### View mode buttons don't work
 **Cause**: Module caching issue

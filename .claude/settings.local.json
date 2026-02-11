@@ -22,7 +22,27 @@
       "WebFetch(domain:repost.aws)",
       "Bash(npm:*)",
       "Bash(node --version:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(cdk diff:*)",
+      "Bash(aws connect list-instances:*)",
+      "Bash(aws connect associate-bot:*)",
+      "Bash(aws connect list-bots:*)",
+      "Bash(aws logs describe-log-streams:*)",
+      "Bash(python scripts/setup_lex_bot.py:*)",
+      "Bash(export AWS_DEFAULT_REGION=us-west-2:*)",
+      "Bash(aws logs describe-log-groups:*)",
+      "Bash(export MSYS_NO_PATHCONV=1)",
+      "Bash(python scripts/update_identification_view.py:*)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(source:*)",
+      "Bash(MSYS_NO_PATHCONV=1 aws logs tail:*)",
+      "Bash(aws lambda get-function:*)",
+      "Bash(aws connect describe-contact-flow:*)",
+      "Bash(aws connect list-integration-associations:*)"
     ]
   }
 }

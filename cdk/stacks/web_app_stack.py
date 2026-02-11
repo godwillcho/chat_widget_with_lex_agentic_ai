@@ -83,6 +83,17 @@ class WebAppStack(NestedStack):
             )
         )
 
+        # Grant permissions for Amazon Connect (StartChatContact API)
+        self.chat_widget_function.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "connect:StartChatContact",
+                    "connect:DescribeContactFlow",
+                ],
+                resources=["*"],  # Can be restricted to specific Connect instance ARN
+            )
+        )
+
         # Create Function URL with CORS
         cors_config = None
         if enable_cors:

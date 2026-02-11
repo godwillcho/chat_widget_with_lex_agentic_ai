@@ -111,6 +111,14 @@ VIEW_CONFIG_DEV = {
             },
             "Body": [
                 {
+                    "_id": "StyleBlock_Professional",
+                    "Type": "TextContent",
+                    "Props": {},
+                    "Content": [
+                        "<style>* {font-family: 'Open Sans', -apple-system, sans-serif;} form {background: #fff; padding: 24px; border-radius: 12px;} h2 {color: #10264a; font-weight: 700; font-size: 1.5rem; margin-bottom: 8px;} p {color: #6b7280; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;} label {display: block; color: #374151; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px;} input[type=\"text\"], input[type=\"email\"], input[type=\"tel\"] {width: 100%; padding: 11px 14px; font-size: 0.95rem; color: #1f2937; background: #fff; border: 2px solid #d1d5db; border-radius: 8px; transition: all 0.2s ease; box-sizing: border-box; margin-bottom: 18px;} input:focus {outline: none; border-color: #10264a; box-shadow: 0 0 0 3px rgba(16,38,74,0.1);} input:hover {border-color: #9ca3af;} button {width: 100%; padding: 14px 24px; font-size: 1rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #10264a 0%, #1a3a6b 100%); border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(16,38,74,0.25); margin-top: 8px;} button:hover {background: linear-gradient(135deg, #1a3a6b 0%, #10264a 100%); box-shadow: 0 6px 16px rgba(16,38,74,0.35); transform: translateY(-2px);} button:active {transform: translateY(0); box-shadow: 0 2px 8px rgba(16,38,74,0.3);}</style>"
+                    ]
+                },
+                {
                     "_id": "Address_1770339674464",
                     "Type": "Container",
                     "Props": {},

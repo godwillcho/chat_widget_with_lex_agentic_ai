@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Connect Widget Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>Amazon Connect Widget Debug Test</h1>
+
+    <div class="test-section">
+        <h2>Configuration</h2>
+        <p><strong>Lambda Function URL:</strong> <code>https://kfe6wjm4tyqrwszjh7jhugjima0riwot.lambda-url.us-west-2.on.aws/</code></p>
+        <p><strong>Widget ID:</strong> <code>497c0ff9-3611-45dc-a56d-21aa65f76969</code></p>
+        <p><strong>Instance ID:</strong> <code>e75a053a-60c7-45f3-83f7-a24df6d3b52d</code></p>
+        <p><strong>Contact Flow ID:</strong> <code>b1cc0b5a-09d5-4c50-ad1f-5b9b55f75336</code></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Automated Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearConsole()">Clear Console</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Manual Tests</h2>
+        <button onclick="testTokenEndpoint()">Test Token Endpoint</button>
+        <button onclick="testWidgetScript()">Test Widget Script Loading</button>
+        <button onclick="checkAmazonConnect()">Check amazon_connect Object</button>
+        <button onclick="testLambdaPage()">Test Lambda Page Load</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="console-output">Console ready...\n</div>
+    </div>
+
+    <!-- Amazon Connect Widget Scripts -->
+    <script type="text/javascript">
+      (function(w, d, x, id){
+        s=d.createElement('script');
+        s.src='https://nextgencxsolutions.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
+        s.async=1;
+        s.id=id;
+        d.getElementsByTagName('head')[0].appendChild(s);
+        w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
+      })(window, document, 'amazon_connect', '497c0ff9-3611-45dc-a56d-21aa65f76969');
+
+      amazon_connect('styles', {
+        iconType: 'CHAT',
+        openChat: { color: '#ffffff', backgroundColor: '#123456' },
+        closeChat: { color: '#ffffff', backgroundColor: '#123456'}
+      });
+
+      amazon_connect('supportedMessagingContentTypes', [
+        'text/plain',
+        'text/markdown',
+        'application/vnd.amazonaws.connect.message.interactive',
+        'application/vnd.amazonaws.connect.message.interactive.response'
+      ]);
+    </script>
+
+    <script type="text/javascript">
+      // Authentication callback
+      amazon_connect('authenticate', function(callback) {
+        logToConsole('[AUTH] Fetching token from Lambda...');
+
+        window.fetch('https://kfe6wjm4tyqrwszjh7jhugjima0riwot.lambda-url.us-west-2.on.aws/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        })
+        .then(function(res) {
+          logToConsole('[AUTH] Token response status: ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          logToConsole('[AUTH] Token data received: ' + JSON.stringify(data, null, 2));
+          callback(data.data);
+        })
+        .catch(function(error) {
+          logToConsole('[ERROR] Authentication failed: ' + error, true);
+          alert('Failed to authenticate. Check console for details.');
+        });
+      });
+    </script>
+
+    <!-- Test Functions -->
+    <script>
+        const consoleOutput = document.getElementById('console-output');
+        const testResults = document.getElementById('test-results');
+
+        function logToConsole(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = isError ? '[ERROR]' : '[INFO]';
+            consoleOutput.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            console.log(message);
+        }
+
+        function addTestResult(testName, passed, message) {
+            const div = document.createElement('div');
+            div.className = passed ? 'status success' : 'status error';
+            div.innerHTML = `<strong>${testName}:</strong> ${message}`;
+            testResults.appendChild(div);
+        }
+
+        function clearConsole() {
+            consoleOutput.textContent = 'Console cleared...\n';
+            testResults.innerHTML = '';
+        }
+
+        async function testTokenEndpoint() {
+            logToConsole('Testing token endpoint...');
+            try {
+                const response = await fetch('https://kfe6wjm4tyqrwszjh7jhugjima0riwot.lambda-url.us-west-2.on.aws/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                logToConsole(`Token endpoint status: ${response.status}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                logToConsole('Token response: ' + JSON.stringify(data, null, 2));
+
+                // Validate response structure
+                if (data.data && data.data.participantToken && data.data.contactId) {
+                    addTestResult('Token Endpoint', true, 'Token generated successfully');
+                    logToConsole('✓ Token has valid structure');
+                } else {
+                    addTestResult('Token Endpoint', false, 'Token structure is invalid');
+                    logToConsole('✗ Token missing required fields', true);
+                }
+            } catch (error) {
+                logToConsole(`Token endpoint error: ${error.message}`, true);
+                addTestResult('Token Endpoint', false, error.message);
+            }
+        }
+
+        function testWidgetScript() {
+            logToConsole('Checking widget script loading...');
+            const script = document.getElementById('497c0ff9-3611-45dc-a56d-21aa65f76969');
+
+            if (script) {
+                logToConsole('✓ Widget script element found in DOM');
+                logToConsole(`Script src: ${script.src}`);
+
+                if (script.src.includes('amazon-connect-chat-interface-client.js')) {
+                    addTestResult('Widget Script', true, 'Script element is present and configured correctly');
+                } else {
+                    addTestResult('Widget Script', false, 'Script src is incorrect');
+                }
+            } else {
+                logToConsole('✗ Widget script element not found', true);
+                addTestResult('Widget Script', false, 'Script element not found in DOM');
+            }
+        }
+
+        function checkAmazonConnect() {
+            logToConsole('Checking amazon_connect object...');
+
+            if (typeof window.amazon_connect === 'function') {
+                logToConsole('✓ amazon_connect function is defined');
+                logToConsole(`amazon_connect.ac array length: ${window.amazon_connect.ac ? window.amazon_connect.ac.length : 0}`);
+                addTestResult('amazon_connect Object', true, 'Function is defined and accessible');
+            } else {
+                logToConsole('✗ amazon_connect function is not defined', true);
+                logToConsole('This means the widget script has not loaded yet or failed to load');
+                addTestResult('amazon_connect Object', false, 'Function is not defined - script may not have loaded');
+            }
+        }
+
+        async function testLambdaPage() {
+            logToConsole('Testing Lambda page load...');
+            try {
+                const response = await fetch('https://kfe6wjm4tyqrwszjh7jhugjima0riwot.lambda-url.us-west-2.on.aws/');
+
+                logToConsole(`Lambda page status: ${response.status}`);
+
+                if (response.ok) {
+                    const html = await response.text();
+                    logToConsole(`Page size: ${html.length} bytes`);
+
+                    // Check if page contains widget scripts
+                    const hasWidgetScript = html.includes('amazon_connect');
+                    const hasAuthCallback = html.includes('authenticate');
+
+                    if (hasWidgetScript && hasAuthCallback) {
+                        addTestResult('Lambda Page', true, 'Page loads with widget scripts included');
+                        logToConsole('✓ Page contains amazon_connect initialization');
+                        logToConsole('✓ Page contains authenticate callback');
+                    } else {
+                        addTestResult('Lambda Page', false, 'Page missing widget scripts');
+                        logToConsole('✗ Page may be missing widget initialization', true);
+                    }
+                } else {
+                    addTestResult('Lambda Page', false, `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                logToConsole(`Lambda page error: ${error.message}`, true);
+                addTestResult('Lambda Page', false, error.message);
+            }
+        }
+
+        async function runAllTests() {
+            clearConsole();
+            logToConsole('Starting automated test suite...\n');
+
+            await testLambdaPage();
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            testWidgetScript();
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            checkAmazonConnect();
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            await testTokenEndpoint();
+
+            logToConsole('\nAll tests completed!');
+        }
+
+        // Log widget initialization
+        logToConsole('Test page loaded');
+        logToConsole('Waiting for widget script to load...');
+
+        // Check if script loads after a delay
+        setTimeout(() => {
+            if (typeof window.amazon_connect === 'function') {
+                logToConsole('✓ Widget script loaded successfully');
+            } else {
+                logToConsole('✗ Widget script failed to load after 3 seconds', true);
+                logToConsole('Check browser Network tab for script loading errors');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -7,11 +7,18 @@ from aws_cdk import (
     Duration,
     CfnOutput,
     RemovalPolicy,
+    CustomResource,
 )
 from aws_cdk import aws_lex as lex
 from aws_cdk import aws_iam as iam
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_lambda as lambda_
+from aws_cdk.custom_resources import (
+    AwsCustomResource,
+    AwsCustomResourcePolicy,
+    PhysicalResourceId,
+    AwsSdkCall,
+)
 from constructs import Construct
 import os
 
@@ -146,16 +153,15 @@ class LexBotStack(NestedStack):
                         lex.CfnBot.IntentProperty(
                             name="YesNoQuestionIntent",
                             description="Intent to handle Yes/No responses",
+                            # Sample utterances that trigger the intent
+                            # DialogCodeHook will handle slot filling from inputTranscript
                             sample_utterances=[
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Yes"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="No"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Yeah"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Nope"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Sure"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Okay"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="Not really"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="I agree"),
-                                lex.CfnBot.SampleUtteranceProperty(utterance="I don't agree"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="yes"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="no"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="yeah"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="nope"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="sure"),
+                                lex.CfnBot.SampleUtteranceProperty(utterance="okay"),
                             ],
                             # Slot for capturing Yes/No response
                             slots=[
@@ -179,6 +185,13 @@ class LexBotStack(NestedStack):
                                             ]
                                         )
                                     )
+                                )
+                            ],
+                            # Set slot priorities for intent
+                            slot_priorities=[
+                                lex.CfnBot.SlotPriorityProperty(
+                                    priority=1,
+                                    slot_name="YesNoResponse"
                                 )
                             ],
                             # Intent confirmation (optional)
@@ -232,7 +245,7 @@ class LexBotStack(NestedStack):
                             ),
                         ),
                     ],
-                    # Slot types (if custom slots are needed)
+                    # No custom slot types needed
                     slot_types=[],
                 )
             ],
@@ -296,6 +309,9 @@ class LexBotStack(NestedStack):
                 ]
             ) if lex_config.get("enable_conversation_logs", True) else None,
         )
+
+        # Note: After deployment, run: python scripts/setup_lex_bot.py
+        # This builds the bot locale and associates it with Amazon Connect
 
         # ═══════════════════════════════════════════════════════════
         # OUTPUTS

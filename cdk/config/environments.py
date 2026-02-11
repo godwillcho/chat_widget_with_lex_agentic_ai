@@ -105,9 +105,11 @@ ENVIRONMENTS = {
             # ─── Amazon Connect Credentials (REQUIRED) ──────────────────
             # NOTE: Connect instance MUST be in the same region as aws_region above
             # See instructions at top of file for how to get these values
-            "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",  # ← UPDATE: Your Connect instance URL
-            "WIDGET_ID": "cba73f0d-a749-4cb2-9e0e-2510043f48ac",         # ← UPDATE: Widget ID (UUID)
-            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=",  # ← UPDATE: Encrypted snippet ID (base64)
+            "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",  # ← Connect instance URL
+            "CONNECT_INSTANCE_ID": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # ← Connect instance ID
+            "CONTACT_FLOW_ID": "b1cc0b5a-09d5-4c50-ad1f-5b9b55f75336",  # ← Contact Flow ID (get from Connect console → Flows)
+            "WIDGET_ID": "497c0ff9-3611-45dc-a56d-21aa65f76969",         # ← Widget ID (UUID)
+            "SECURITY_KEY": "Z+I+2RtFRc0fj0Nx9CgRBQiPSChzRQnFQ4wBL2N3WXg=",  # ← Security key for JWT authentication (from Connect console → Chat widgets → Show security key)
 
             # ─── Pre-Chat Form Configuration ────────────────────────────
             # Pre-chat form is configured in lambda_functions/chat_widget/view_configs.py
@@ -127,11 +129,12 @@ ENVIRONMENTS = {
         "cors_allowed_origins": ["*"],
         # ─── Lex Bot Configuration ──────────────────────────────
         "lex_bot_config": {
-            "question_text": "Would you like to continue with your request?",
+            "question_text": "***Do you consent to the use of your Data for identification purposes and research of resources based on your Needs?***",
             "alias_name": "prod",
             "idle_session_timeout": 300,  # 5 minutes
             "enable_confirmation": False,  # Set to True to ask for confirmation
             "enable_conversation_logs": True,  # CloudWatch conversation logs
+            "connect_instance_id": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # Auto-associate bot with Connect
         },
     },
     "staging": {
@@ -150,8 +153,10 @@ ENVIRONMENTS = {
             "COMPANY_NAME": "Trident United Way - STAGING",
             # Amazon Connect credentials - update with your staging widget values
             "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",  # ← UPDATE
+            "CONNECT_INSTANCE_ID": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # ← UPDATE
+            "CONTACT_FLOW_ID": "REPLACE_WITH_YOUR_CONTACT_FLOW_ID",  # ← UPDATE
             "WIDGET_ID": "cba73f0d-a749-4cb2-9e0e-2510043f48ac",         # ← UPDATE
-            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=",  # ← UPDATE
+            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=",  # ← Deprecated
             # Pre-chat form: Update VIEW_CONFIG_STAGING in view_configs.py
             "COLOR_NAVY": "#10264a",
             "COLOR_BLUE": "#1a3a6b",
@@ -164,11 +169,12 @@ ENVIRONMENTS = {
         "cors_allowed_origins": ["https://staging.example.com"],
         # ─── Lex Bot Configuration ──────────────────────────────
         "lex_bot_config": {
-            "question_text": "Would you like to continue with your request?",
+            "question_text": "***Do you consent to the use of your Data for identification purposes and research of resources based on your Needs?***",
             "alias_name": "prod",
             "idle_session_timeout": 300,
             "enable_confirmation": False,
             "enable_conversation_logs": True,
+            "connect_instance_id": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # Auto-associate bot with Connect
         },
     },
     "prod": {
@@ -187,8 +193,10 @@ ENVIRONMENTS = {
             "COMPANY_NAME": "Trident United Way",
             # Amazon Connect credentials - PRODUCTION values (test in dev/staging first!)
             "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",  # ← UPDATE
+            "CONNECT_INSTANCE_ID": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # ← UPDATE
+            "CONTACT_FLOW_ID": "REPLACE_WITH_YOUR_CONTACT_FLOW_ID",  # ← UPDATE
             "WIDGET_ID": "cba73f0d-a749-4cb2-9e0e-2510043f48ac",         # ← UPDATE
-            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=",  # ← UPDATE
+            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3ZnWElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxBMWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0=",  # ← Deprecated
             # Pre-chat form: Update VIEW_CONFIG_PROD in view_configs.py
             "COLOR_NAVY": "#10264a",
             "COLOR_BLUE": "#1a3a6b",
@@ -201,11 +209,12 @@ ENVIRONMENTS = {
         "cors_allowed_origins": ["https://www.tridentunitedway.org", "https://tridentunitedway.org"],
         # ─── Lex Bot Configuration ──────────────────────────────
         "lex_bot_config": {
-            "question_text": "Would you like to continue with your request?",
+            "question_text": "***Do you consent to the use of your Data for identification purposes and research of resources based on your Needs?***",
             "alias_name": "prod",
             "idle_session_timeout": 600,  # 10 minutes for production
             "enable_confirmation": True,  # Enable confirmation in production
             "enable_conversation_logs": True,
+            "connect_instance_id": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",  # Auto-associate bot with Connect
         },
     },
 

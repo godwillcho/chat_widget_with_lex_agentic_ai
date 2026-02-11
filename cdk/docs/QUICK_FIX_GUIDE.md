@@ -8,7 +8,7 @@ Your widget shows **"Something went wrong"** because it's using placeholder Amaz
 
 ## ✅ The Solution (2 Steps)
 
-### Step 1: Get Your Amazon Connect Credentials
+### Step 1: Get Your Amazon Connect Widget Script
 
 **From AWS Console:**
 
@@ -17,59 +17,52 @@ Your widget shows **"Something went wrong"** because it's using placeholder Amaz
 3. Click **Channels** → **Chat widgets**
 4. Create or select a widget
 5. Click **Show security key**
-6. Copy the widget code snippet
-
-**Extract these 3 values from the code:**
-
-```javascript
-// You'll see something like this in the widget code:
-amazon_connect('snippetId', 'YOUR_SNIPPET_ID_HERE');  // ← Copy this
-s.src='https://YOUR-INSTANCE.my.connect.aws/...';      // ← Copy this
-s.id='YOUR-WIDGET-ID';                                  // ← Copy this
-```
-
-You need:
-- **CONNECT_URL**: `https://YOUR-INSTANCE.my.connect.aws`
-- **WIDGET_ID**: UUID format (e.g., `abc12345-1234-5678-90ab-cdef12345678`)
-- **SNIPPET_ID**: Long base64 string (e.g., `QVFJREF...`)
+6. **Copy the entire `<script>...</script>` block**
 
 ---
 
-### Step 2: Update Configuration File
+### Step 2: Update Widget Script File
 
-Edit **`cdk/config/environments.py`** (around line 25-40):
+Paste the widget script into the appropriate environment file:
 
-**Find this section:**
-```python
-"dev": {
-    # ... other config ...
-    "widget_config": {
-        "VIEW_MODE": "standard",
-        "COMPANY_NAME": "Trident United Way - DEV",
-        "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",  # ← CHANGE THIS
-        "WIDGET_ID": "cba73f0d-a749-4cb2-9e0e-2510043f48ac",         # ← CHANGE THIS
-        "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0...",          # ← CHANGE THIS
-        # ... rest of config ...
-    },
-}
-```
+**For Development:**
+Edit **`cdk/lambda_functions/chat_widget/widget_scripts/connect_snippet_dev.js`**
 
-**Replace with your values:**
-```python
-"dev": {
-    # ... other config ...
-    "widget_config": {
-        "VIEW_MODE": "standard",
-        "COMPANY_NAME": "Your Organization Name",                     # ← Change
-        "CONNECT_URL": "https://YOUR-INSTANCE.my.connect.aws",       # ← Change
-        "WIDGET_ID": "your-widget-id-here",                          # ← Change
-        "SNIPPET_ID": "your-snippet-id-here",                        # ← Change
-        "COLOR_NAVY": "#10264a",                                     # ← Optional
-        "COLOR_GOLD": "#f5a623",                                     # ← Optional
-        "WIDGET_HEADER": "Your Helpline",                            # ← Optional
-        "WIDGET_BOT_NAME": "Support Specialist",                     # ← Optional
-    },
-}
+**For Staging:**
+Edit **`cdk/lambda_functions/chat_widget/widget_scripts/connect_snippet_staging.js`**
+
+**For Production:**
+Edit **`cdk/lambda_functions/chat_widget/widget_scripts/connect_snippet_prod.js`**
+
+**Replace the entire file content** with the script you copied from Amazon Connect.
+
+Example content:
+```javascript
+<script type="text/javascript">
+  (function(w, d, x, id){
+    s=d.createElement('script');
+    s.src='https://YOUR-INSTANCE.my.connect.aws/connectwidget/static/amazon-connect-chat-interface-client.js';
+    s.async=1;
+    s.id=id;
+    d.getElementsByTagName('head')[0].appendChild(s);
+    w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
+  })(window, document, 'amazon_connect', 'YOUR-WIDGET-ID');
+
+  amazon_connect('styles', {
+    iconType: 'CHAT',
+    openChat: { color: '#ffffff', backgroundColor: '#123456' },
+    closeChat: { color: '#ffffff', backgroundColor: '#123456'}
+  });
+
+  amazon_connect('snippetId', 'YOUR-LONG-SNIPPET-ID');
+
+  amazon_connect('supportedMessagingContentTypes', [
+    'text/plain',
+    'text/markdown',
+    'application/vnd.amazonaws.connect.message.interactive',
+    'application/vnd.amazonaws.connect.message.interactive.response'
+  ]);
+</script>
 ```
 
 ---
@@ -127,76 +120,77 @@ cdk deploy -c environment=dev --require-approval never
 
 ---
 
-## 📝 Configuration Options
+## 📝 Optional Branding Configuration
 
-### Required Fields
+You can customize branding and colors in **`cdk/config/environments.py`**:
+
 ```python
-"CONNECT_URL": "https://your-instance.my.connect.aws"  # Required
-"WIDGET_ID": "your-widget-id"                          # Required
-"SNIPPET_ID": "your-snippet-id"                        # Required
+"dev": {
+    "widget_config": {
+        "COMPANY_NAME": "Your Organization"          # Company name displayed
+        "COLOR_NAVY": "#10264a"                      # Primary color
+        "COLOR_BLUE": "#1a3a6b"                      # Secondary color
+        "COLOR_GOLD": "#f5a623"                      # Accent color
+        "WIDGET_HEADER": "Chat with Us"              # Widget header text
+        "WIDGET_BOT_NAME": "Support Specialist"      # Agent display name
+        # ... other settings
+    }
+}
 ```
 
-### Optional Branding
-```python
-"COMPANY_NAME": "Your Organization"          # Company name displayed
-"COLOR_NAVY": "#10264a"                      # Primary color
-"COLOR_BLUE": "#1a3a6b"                      # Secondary color
-"COLOR_GOLD": "#f5a623"                      # Accent color
-"WIDGET_HEADER": "Chat with Us"              # Widget header text
-"WIDGET_BOT_NAME": "Support Specialist"      # Agent display name
-```
+**Note:** Widget credentials (URLs, IDs, snippetId) are now in the widget script files, not in environments.py.
 
 ---
 
 ## 🌍 Multiple Organizations?
 
-To deploy to different organizations, create separate environment entries in `config/environments.py`:
+Each environment has its own widget script file. To support multiple organizations:
 
-```python
-ENVIRONMENTS = {
-    "dev": {
-        # Dev environment config
-        "widget_config": {
-            "COMPANY_NAME": "Dev Test",
-            "CONNECT_URL": "https://dev-instance.my.connect.aws",
-            # ...
-        }
-    },
+1. **Create environment-specific widget files** in `cdk/lambda_functions/chat_widget/widget_scripts/`:
+   - `connect_snippet_org1prod.js`
+   - `connect_snippet_org2prod.js`
 
-    "org1-prod": {  # ← New environment for Organization 1
-        "stack_name_suffix": "Org1Prod",
-        "aws_region": "us-west-2",
-        "widget_config": {
-            "COMPANY_NAME": "Organization 1",
-            "CONNECT_URL": "https://org1-instance.my.connect.aws",
-            "WIDGET_ID": "org1-widget-id",
-            "SNIPPET_ID": "org1-snippet-id",
-            # ...
-        }
-    },
+2. **Add environments** in `config/environments.py`:
+   ```python
+   ENVIRONMENTS = {
+       "dev": {
+           # Dev environment config
+           "widget_config": {
+               "COMPANY_NAME": "Dev Test",
+               # ...
+           }
+       },
 
-    "org2-prod": {  # ← New environment for Organization 2
-        "stack_name_suffix": "Org2Prod",
-        "aws_region": "us-east-1",
-        "widget_config": {
-            "COMPANY_NAME": "Organization 2",
-            "CONNECT_URL": "https://org2-instance.my.connect.aws",
-            "WIDGET_ID": "org2-widget-id",
-            "SNIPPET_ID": "org2-snippet-id",
-            # ...
-        }
-    },
-}
-```
+       "org1-prod": {  # ← New environment for Organization 1
+           "stack_name_suffix": "Org1Prod",
+           "aws_region": "us-west-2",
+           "widget_config": {
+               "COMPANY_NAME": "Organization 1",
+               # ...
+           }
+       },
 
-**Deploy to each:**
-```bash
-# Organization 1
-cdk deploy -c environment=org1-prod --require-approval never
+       "org2-prod": {  # ← New environment for Organization 2
+           "stack_name_suffix": "Org2Prod",
+           "aws_region": "us-east-1",
+           "widget_config": {
+               "COMPANY_NAME": "Organization 2",
+               # ...
+           }
+       },
+   }
+   ```
 
-# Organization 2
-cdk deploy -c environment=org2-prod --require-approval never
-```
+3. **Paste widget scripts** from each organization's Amazon Connect into their respective files
+
+4. **Deploy to each:**
+   ```bash
+   # Organization 1
+   cdk deploy -c environment=org1-prod --require-approval never
+
+   # Organization 2
+   cdk deploy -c environment=org2-prod --require-approval never
+   ```
 
 ---
 
@@ -209,7 +203,7 @@ cdk deploy -c environment=org2-prod --require-approval never
 **Solution**: Ensure you created and published a Contact Flow, and linked it to your widget
 
 ### Issue: "Invalid widget configuration" error
-**Solution**: Double-check all 3 credentials (URL, Widget ID, Snippet ID) are from the same Connect instance
+**Solution**: Make sure you copied the complete widget script from Amazon Connect without modifications
 
 ### Issue: CORS errors in browser console
 **Solution**: In Connect Console → Application integration → Add your domain to approved origins
