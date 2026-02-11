@@ -110,6 +110,19 @@ class WebAppStack(NestedStack):
             cors=cors_config,
         )
 
+        # Grant public access to the Function URL
+        self.chat_widget_function.add_permission(
+            "FunctionURLAllowPublicAccess",
+            principal=iam.AnyPrincipal(),
+            action="lambda:InvokeFunctionUrl",
+            function_url_auth_type=lambda_.FunctionUrlAuthType.NONE,
+        )
+        self.chat_widget_function.add_permission(
+            "FunctionURLAllowPublicInvoke",
+            principal=iam.AnyPrincipal(),
+            action="lambda:InvokeFunction",
+        )
+
         # Outputs
         CfnOutput(
             self,
