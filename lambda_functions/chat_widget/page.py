@@ -1,12 +1,16 @@
 """
-page.py — HTML page template, three modes: standard / kiosk / mobile.
+page.py — HTML page template, two modes: standard / kiosk.
 ─────────────────────────────────────────────────────────────────────
-  standard → full 211 website with floating widget
+  standard → full website with floating widget
   kiosk    → two-panel (branding left, centered widget right)
-  mobile   → compact header bar + full-screen widget below
 """
 
-from config import VIEW_MODE, IS_KIOSK, IS_MOBILE, IS_STD, COMPANY_NAME_HTML
+from config import (
+    VIEW_MODE, IS_KIOSK, IS_STD,
+    COMPANY_NAME_HTML, WIDGET_HEADER_HTML,
+    SERVICE_NAME_HTML, SERVICE_TAGLINE_HTML,
+    COMPANY_TAGLINE_HTML, FOOTER_TAGLINE_HTML,
+)
 
 
 # ═══════════════════════════════════════════════════════
@@ -20,7 +24,7 @@ def _head(styles_css: str) -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0{scalable}">
-    <title>211 Helpline | {COMPANY_NAME_HTML}</title>
+    <title>{WIDGET_HEADER_HTML}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Open+Sans:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
@@ -50,24 +54,17 @@ _ICONS = {
         '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>'
         '<line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>'
     ),
-    # phone — switch to mobile
-    "mobile": (
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" '
-        'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
-        '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>'
-        '<line x1="12" y1="18" x2="12.01" y2="18"/></svg>'
-    ),
 }
 
-_LABELS = {"standard": "Website", "kiosk": "Kiosk", "mobile": "Mobile"}
+_LABELS = {"standard": "Website", "kiosk": "Kiosk"}
 
 
 def _mode_toggle() -> str:
-    """Floating pill with buttons to switch between all three modes."""
-    dark_bg = not IS_STD  # kiosk + mobile have dark backgrounds
+    """Floating pill with buttons to switch between standard and kiosk modes."""
+    dark_bg = not IS_STD  # kiosk has dark background
 
     buttons_html = ""
-    for mode in ("standard", "kiosk", "mobile"):
+    for mode in ("standard", "kiosk"):
         is_active = (mode == VIEW_MODE)
         buttons_html += f"""
             <a href="?mode={mode}" class="mt-btn {'mt-active' if is_active else ''}"
@@ -80,10 +77,8 @@ def _mode_toggle() -> str:
     <style>
         .mode-switcher {{
             position: fixed;
-            top: {'auto' if IS_MOBILE else '14px'};
-            {'bottom: 8px;' if IS_MOBILE else ''}
-            right: {'50%' if IS_MOBILE else '14px'};
-            {'transform: translateX(50%);' if IS_MOBILE else ''}
+            top: 14px;
+            right: 14px;
             z-index: 9999;
             display: flex;
             gap: 2px;
@@ -131,34 +126,6 @@ def _mode_toggle() -> str:
 
 
 # ═══════════════════════════════════════════════════════
-#  MOBILE PAGE
-# ═══════════════════════════════════════════════════════
-
-def _mobile_page(styles_css: str, widget_script: str) -> str:
-    cn = COMPANY_NAME_HTML
-    return "".join([
-        _head(styles_css),
-        f"""
-    <div class="mobile-header">
-        <div class="mobile-brand">
-            <div class="mobile-211">211</div>
-            <div class="mobile-brand-text">
-                <div class="mobile-org">{cn}</div>
-                <div class="mobile-tagline">Free &bull; Confidential &bull; 24/7</div>
-            </div>
-        </div>
-        <div class="mobile-tags">
-            <span class="mobile-tag">180+ Languages</span>
-        </div>
-    </div>
-    <div class="mobile-body"></div>""",
-        _mode_toggle(),
-        widget_script,
-        _closing(),
-    ])
-
-
-# ═══════════════════════════════════════════════════════
 #  KIOSK PAGE
 # ═══════════════════════════════════════════════════════
 
@@ -171,9 +138,9 @@ def _kiosk_page(styles_css: str, widget_script: str) -> str:
         <div class="brand-panel">
             <div class="brand-top">
                 <div class="brand-org">{cn}</div>
-                <div class="brand-tagline">Serving Berkeley, Charleston &amp; Dorchester Counties</div>
-                <div class="brand-211">2-1-1</div>
-                <div class="brand-subtitle">Your connection to care</div>
+                <div class="brand-tagline">{COMPANY_TAGLINE_HTML}</div>
+                <div class="brand-211">{SERVICE_NAME_HTML}</div>
+                <div class="brand-subtitle">{SERVICE_TAGLINE_HTML}</div>
                 <div class="brand-desc">
                     Free, confidential support connecting you to essential
                     resources &mdash; housing, food, utilities, healthcare,
@@ -186,18 +153,18 @@ def _kiosk_page(styles_css: str, widget_script: str) -> str:
                     <span class="brand-tag">180+ Languages</span>
                 </div>
                 <div class="reach-section">
-                    <div class="reach-label">Ways to Reach 211</div>
+                    <div class="reach-label">Ways to Reach Us</div>
                     <div class="reach-item">
                         <div class="reach-num">1</div>
-                        <div class="reach-text"><strong>Chat</strong><span>Use the form on this screen</span></div>
-                    </div>
-                    <div class="reach-item">
-                        <div class="reach-num">2</div>
                         <div class="reach-text"><strong>Call 2-1-1</strong><span>Toll-free: 1-866-892-9211</span></div>
                     </div>
                     <div class="reach-item">
-                        <div class="reach-num">3</div>
+                        <div class="reach-num">2</div>
                         <div class="reach-text"><strong>Text &ldquo;Help&rdquo; to 211-211</strong><span>Get connected via text message</span></div>
+                    </div>
+                    <div class="reach-item">
+                        <div class="reach-num">3</div>
+                        <div class="reach-text"><strong>Online</strong><span>Search SC211.org for resources</span></div>
                     </div>
                 </div>
             </div>
@@ -210,7 +177,7 @@ def _kiosk_page(styles_css: str, widget_script: str) -> str:
         <div class="widget-area"><div class="widget-glow"></div></div>
     </div>
     <div class="widget-hint">
-        <div class="hint-text">Fill out the form above to start your chat session</div>
+        <div class="hint-text">Speak with a Community Resource Specialist to get connected</div>
     </div>""",
         _mode_toggle(),
         widget_script,
@@ -240,13 +207,13 @@ def _standard_page(styles_css: str, widget_script: str) -> str:
         _head(styles_css),
         f"""
     <div class="util-bar">
-        <span>Serving Berkeley, Charleston &amp; Dorchester Counties</span>
+        <span>{COMPANY_TAGLINE_HTML}</span>
         <a href="#">Stay Connected</a><span>|</span><a href="tel:211">Call 2-1-1 Now</a>
     </div>
     <nav>
         <a href="#" class="nav-brand"><div class="nav-logo-text">
             <span class="org-name">{cn}</span>
-            <span class="org-tag">Uniting the Tri-County to uplift families</span>
+            <span class="org-tag">{SERVICE_NAME_HTML}</span>
         </div></a>
         <div class="nav-links">
             <a href="#">Ways to Help</a><a href="#">Our Impact</a>
@@ -255,18 +222,18 @@ def _standard_page(styles_css: str, widget_script: str) -> str:
         </div>
     </nav>
     <div class="breadcrumb">
-        <a href="#">Home</a> &rsaquo; <a href="#">Get Help</a> &rsaquo; <strong>211 Helpline</strong>
+        <a href="#">Home</a> &rsaquo; <a href="#">Get Help</a> &rsaquo; <strong>{SERVICE_NAME_HTML}</strong>
     </div>
     <section class="hero-banner"><div class="hero-inner">
         <div>
             <h1>Get connected to help.<br><span>Start here.</span></h1>
-            <p class="subtitle">{cn}&rsquo;s 211 Helpline is a free, confidential, 24/7
+            <p class="subtitle">{cn}&rsquo;s {SERVICE_NAME_HTML} is a free, confidential, 24/7
                 service that connects you to essential resources across Berkeley,
                 Charleston and Dorchester counties.</p>
         </div>
         <div class="hero-right"><div class="hero-211">
-            <div class="big-211">2-1-1</div>
-            <div style="font-size:0.95rem;opacity:0.9;margin-bottom:0.25rem;">Your connection to care</div>
+            <div class="big-211">{SERVICE_NAME_HTML}</div>
+            <div style="font-size:0.95rem;opacity:0.9;margin-bottom:0.25rem;">{SERVICE_TAGLINE_HTML}</div>
             <div class="hero-tags">
                 <span class="hero-tag">Free</span><span class="hero-tag">Confidential</span>
                 <span class="hero-tag">24/7/365</span><span class="hero-tag">180+ Languages</span>
@@ -275,35 +242,36 @@ def _standard_page(styles_css: str, widget_script: str) -> str:
     </div></section>
 
     <section class="content">
-        <div class="chat-callout">
-            <div class="chat-callout-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div class="chat-callout-body">
-                <h3>Chat with us &mdash; right from this page</h3>
-                <p>Click the <strong>chat icon</strong> in the bottom-right corner to start a conversation with a Community Resource Specialist.</p>
-                <ul>
-                    <li>{_ARROW} <strong>Create a case</strong> so our team can follow up</li>
-                    <li>{_ARROW} <strong>Get information about your needs</strong> &mdash; housing, food, utilities, healthcare</li>
-                    <li>{_ARROW} <strong>Receive vetted referrals</strong> to local agencies</li>
-                </ul>
-                <p class="chat-note">Your information is confidential.</p>
-            </div>
+        <div class="about-section">
+            <h2>What is {SERVICE_NAME_HTML}?</h2>
+            <p>{SERVICE_NAME_HTML} is an <strong>information &amp; referral service</strong> that connects people
+                to expert, caring help in finding local health &amp; human resources. Available 24/7/365,
+                it is <strong>free, confidential</strong>, and accessible in <strong>180+ languages</strong>.</p>
         </div>
 
-        <h2>Three ways to reach 211:</h2>
+        <h2>How can we help?</h2>
         <div class="ways-grid">
-            <div class="way-card"><div class="way-num">1</div><h3>Call</h3><div class="way-action">Dial 2-1-1</div><p>Talk to a specialist 24/7. Toll-free: 1-866-892-9211.</p></div>
-            <div class="way-card"><div class="way-num">2</div><h3>Chat</h3><div class="way-action">Click the chat icon</div><p>Start a case right from this page.</p></div>
-            <div class="way-card"><div class="way-num">3</div><h3>Text</h3><div class="way-action">&ldquo;Help&rdquo; to 211-211</div><p>Text anytime to get connected.</p></div>
+            <div class="way-card"><div class="way-icon">&#127968;</div><h3>Housing &amp; Shelter</h3><p>Rental assistance, emergency shelters, transitional housing, and utility payment support.</p></div>
+            <div class="way-card"><div class="way-icon">&#127822;</div><h3>Food Assistance</h3><p>Food banks, meal programs, SNAP benefits, and community nutrition resources.</p></div>
+            <div class="way-card"><div class="way-icon">&#9877;&#65039;</div><h3>Healthcare</h3><p>Medical clinics, mental health services, crisis counseling, and insurance navigation.</p></div>
+            <div class="way-card"><div class="way-icon">&#128188;</div><h3>Employment</h3><p>Job training, career counseling, resume help, and workforce development programs.</p></div>
+            <div class="way-card"><div class="way-icon">&#128161;</div><h3>Utility Bills</h3><p>Help with electricity, water, heating bills, and weatherization programs.</p></div>
+            <div class="way-card"><div class="way-icon">&#128106;</div><h3>Family Services</h3><p>Childcare, parenting support, domestic violence resources, and veteran assistance.</p></div>
         </div>
 
-        <div class="know-section"><h3>What to expect</h3>
+        <h2>Ways to reach us:</h2>
+        <div class="ways-grid">
+            <div class="way-card"><div class="way-num">1</div><h3>Call</h3><div class="way-action">Dial 2-1-1</div><p>Talk to a trained Community Resource Specialist 24/7. Toll-free: 1-866-892-9211.</p></div>
+            <div class="way-card"><div class="way-num">2</div><h3>Text</h3><div class="way-action">&ldquo;Help&rdquo; to 211-211</div><p>Text anytime to get connected with resources.</p></div>
+            <div class="way-card"><div class="way-num">3</div><h3>Online</h3><div class="way-action">Search SC211.org</div><p>Browse the searchable resource database online.</p></div>
+        </div>
+
+        <div class="know-section"><h3>How it works</h3>
             <ul class="know-list">
-                <li><span class="check">{_CHECK}</span><span>A trained Specialist will listen and identify resources.</span></li>
-                <li><span class="check">{_CHECK}</span><span>Chat creates a <strong>case</strong> for follow-up.</span></li>
-                <li><span class="check">{_CHECK}</span><span>Vetted agency referrals with details.</span></li>
-                <li><span class="check">{_CHECK}</span><span><strong>Free and confidential</strong>. 180+ languages.</span></li>
+                <li><span class="check">{_CHECK}</span><span>A trained Community Resource Specialist listens and identifies your needs.</span></li>
+                <li><span class="check">{_CHECK}</span><span>You receive <strong>vetted referrals</strong> to local agencies with details and follow-up.</span></li>
+                <li><span class="check">{_CHECK}</span><span>Your information is always <strong>confidential</strong>.</span></li>
+                <li><span class="check">{_CHECK}</span><span><strong>Free service</strong> available in 180+ languages, 24/7/365.</span></li>
             </ul>
         </div>
 
@@ -312,7 +280,7 @@ def _standard_page(styles_css: str, widget_script: str) -> str:
             <div class="alice-body">
                 <h3>Are you an ALICE&reg; family?</h3>
                 <p><strong>38%</strong> of Tri-County households are ALICE &mdash; <em>Asset Limited, Income Constrained, Employed</em>.</p>
-                <p>{cn}&rsquo;s goal: uplift <strong>15,000 families</strong> by 2035. <strong>Start a chat</strong> to create a case.</p>
+                <p>{cn}&rsquo;s goal: uplift <strong>15,000 families</strong> by 2035. Call 2-1-1 to get connected with resources.</p>
             </div>
         </div>
 
@@ -320,21 +288,21 @@ def _standard_page(styles_css: str, widget_script: str) -> str:
             <p>Last year: <strong>6,038 households</strong> served (<strong>12,251 individuals</strong>).</p>
             <div class="centers-grid">
                 <div class="center-card"><strong>Berkeley County</strong><span>Grace Impact Development Center</span></div>
-                <div class="center-card"><strong>Charleston County</strong><span>Coming soon</span></div>
+                <div class="center-card"><strong>Charleston County</strong><span>6296 Rivers Ave, Ste 200, N. Charleston</span></div>
                 <div class="center-card"><strong>Dorchester County</strong><span>133 E 1st North St, Summerville</span></div>
             </div>
         </div>
 
-        <div class="cta-banner"><div><h3>Ready to get connected?</h3><p>Use chat or call 2-1-1 anytime.</p></div><a href="tel:211" class="cta-btn">Call 2-1-1</a></div>
+        <div class="cta-banner"><div><h3>Ready to get connected?</h3><p>Call 2-1-1 or text &ldquo;Help&rdquo; to 211-211 anytime.</p></div><a href="tel:211" class="cta-btn">Call 2-1-1</a></div>
     </section>
 
     <footer><div class="footer-inner">
         <div>
             <div class="footer-brand">{cn}</div>
-            <div class="footer-tagline">Uniting the Tri-County to uplift families out of poverty.</div>
+            <div class="footer-tagline">{FOOTER_TAGLINE_HTML}</div>
             <div class="footer-addr">6296 Rivers Ave, Ste 200<br>North Charleston, SC 29406<br>843.740.9000</div>
         </div>
-        <div><h4>Get Help</h4><ul><li><a href="#">211 Helpline</a></li><li><a href="#">Berkeley County</a></li><li><a href="#">Charleston County</a></li><li><a href="#">Dorchester County</a></li></ul></div>
+        <div><h4>Get Help</h4><ul><li><a href="#">{SERVICE_NAME_HTML}</a></li><li><a href="#">Berkeley County</a></li><li><a href="#">Charleston County</a></li><li><a href="#">Dorchester County</a></li></ul></div>
         <div><h4>About Us</h4><ul><li><a href="#">Our Team</a></li><li><a href="#">ALICE&reg; Report</a></li><li><a href="#">Impact Report</a></li><li><a href="#">Contact Us</a></li></ul></div>
     </div><div class="footer-bottom">&copy; 2025 {cn}. All Rights Reserved.</div></footer>""",
         _mode_toggle(),
@@ -351,5 +319,4 @@ def render_page(styles_css: str, widget_script: str) -> str:
     return {
         "standard": _standard_page,
         "kiosk": _kiosk_page,
-        "mobile": _mobile_page,
     }[VIEW_MODE](styles_css, widget_script)

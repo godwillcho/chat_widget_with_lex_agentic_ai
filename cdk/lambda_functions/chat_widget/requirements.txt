@@ -1,4 +1,0 @@
-# Python dependencies for the Chat Widget Lambda function
-#
-# Currently using static widget with snippetId - no external dependencies needed
-# The Lambda function only serves HTML with embedded Amazon Connect widget script

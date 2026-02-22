@@ -2,9 +2,8 @@
 config.py — Centralized configuration from environment variables.
 ──────────────────────────────────────────────────────────────────
 VIEW_MODE controls the layout:
-  standard → full 211 website with floating chat widget (default)
+  standard → full website with floating chat widget (default)
   kiosk    → full-screen kiosk, large centered widget, auto-open/reset
-  mobile   → phone-optimized, compact header, full-width widget, auto-open
 """
 
 import os
@@ -18,7 +17,7 @@ def _env(key: str, default: str = "") -> str:
 # ── Mode ──
 _legacy = _env("KIOSK_MODE", "false").lower() in ("true", "1", "yes")
 VIEW_MODE = _env("VIEW_MODE", "kiosk" if _legacy else "standard").lower()
-if VIEW_MODE not in ("standard", "kiosk", "mobile"):
+if VIEW_MODE not in ("standard", "kiosk"):
     VIEW_MODE = "standard"
 
 # ── Branding ──
@@ -28,17 +27,8 @@ COMPANY_NAME_JS   = COMPANY_NAME.replace("\\", "\\\\").replace("'", "\\'")
 
 # ── Amazon Connect ──
 CONNECT_URL  = _env("CONNECT_URL", "https://nextgencxsolutions.my.connect.aws")
-WIDGET_ID    = _env("WIDGET_ID", "cba73f0d-a749-4cb2-9e0e-2510043f48ac")
-SNIPPET_ID   = _env("SNIPPET_ID",
-    "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FG"
-    "ekVPL3Bac1lxWXJPT3lPUUdUYXdMQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFn"
-    "RUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNZVduTjdBV3Zn"
-    "WElFYTRkNkFnRVFnQ3Z2MXNwdEt6YjBTNXRRVEFiU2QyWmFvZ2VQb0Z4TzhPQXI4UkxB"
-    "MWpQUG83V3ZQTXg1ZHhxKzk1WjU6OkM1WVI2U01URGIrdzhHMTYyOG1HVlVZUitobGx3"
-    "S1FYZnh6STVzNGtadkYrcXJXNDhjTmJQUFJtZWhTSy8wQjk1bHZPSFVKNkg0cTFOdVM2"
-    "bUFxWmUwa3hWZ21FOC9iS1pIZmt2RzVyRlVCRmJzaVd1NXF6b2xXdFFJQU5xMEM1WDV6"
-    "TSsrTzhCdU9xaEVVbnZ4MXl0ekNnUmMwSkU2ST0="
-)
+WIDGET_ID    = _env("WIDGET_ID", "497c0ff9-3611-45dc-a56d-21aa65f76969")
+SNIPPET_ID   = _env("SNIPPET_ID", "")
 
 # ── Theme colors ──
 COLOR_NAVY      = _env("COLOR_NAVY", "#10264a")
@@ -47,13 +37,25 @@ COLOR_GOLD      = _env("COLOR_GOLD", "#f5a623")
 COLOR_GOLD_LT   = _env("COLOR_GOLD_LIGHT", "#fbbf24")
 
 # ── Widget display — sizes adapt to mode ──
-WIDGET_HEADER    = _env("WIDGET_HEADER", "211 Helpline")
-WIDGET_BOT_NAME  = _env("WIDGET_BOT_NAME", "211 Specialist")
+WIDGET_HEADER    = _env("WIDGET_HEADER", "Trident United Way Stability360")
+WIDGET_BOT_NAME  = _env("WIDGET_BOT_NAME", "Stability360")
+
+# ── Page display text ──
+SERVICE_NAME       = _env("SERVICE_NAME", "Stability360")
+SERVICE_TAGLINE    = _env("SERVICE_TAGLINE", "Your connection to care")
+COMPANY_TAGLINE    = _env("COMPANY_TAGLINE", "Serving Berkeley, Charleston & Dorchester Counties")
+FOOTER_TAGLINE     = _env("FOOTER_TAGLINE", "Uniting the Tri-County to uplift families out of poverty.")
+
+# HTML-safe versions
+WIDGET_HEADER_HTML   = html_mod.escape(WIDGET_HEADER)
+SERVICE_NAME_HTML    = html_mod.escape(SERVICE_NAME)
+SERVICE_TAGLINE_HTML = html_mod.escape(SERVICE_TAGLINE)
+COMPANY_TAGLINE_HTML = html_mod.escape(COMPANY_TAGLINE)
+FOOTER_TAGLINE_HTML  = html_mod.escape(FOOTER_TAGLINE)
 
 _DEFAULTS = {
     "standard": {"w": "420px", "h": "640px", "font": "14px"},
     "kiosk":    {"w": "780px", "h": "920px", "font": "18px"},
-    "mobile":   {"w": "100vw", "h": "calc(100vh - 72px)", "font": "16px"},
 }
 _d = _DEFAULTS[VIEW_MODE]
 
@@ -62,5 +64,4 @@ WIDGET_HEIGHT    = _env("WIDGET_HEIGHT", _d["h"])
 WIDGET_FONT_SIZE = _d["font"]
 
 IS_KIOSK  = VIEW_MODE == "kiosk"
-IS_MOBILE = VIEW_MODE == "mobile"
 IS_STD    = VIEW_MODE == "standard"

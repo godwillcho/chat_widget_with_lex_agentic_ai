@@ -13,23 +13,19 @@ Enhancements included:
 """
 
 from config import (
-    VIEW_MODE, IS_KIOSK, IS_MOBILE, IS_STD,
+    VIEW_MODE, IS_KIOSK, IS_STD,
     COLOR_NAVY,
     WIDGET_WIDTH, WIDGET_HEIGHT, WIDGET_FONT_SIZE,
-    WIDGET_HEADER, WIDGET_BOT_NAME, COMPANY_NAME_JS,
+    COMPANY_NAME_JS,
+    WIDGET_HEADER_HTML,
 )
-
-
-def _js_esc(s: str) -> str:
-    """Escape strings for safe use in JavaScript."""
-    return s.replace("\\", "\\\\").replace("'", "\\'")
 
 
 def custom_styles_script() -> str:
     """Generate custom styles for the Amazon Connect widget."""
-    fh = "90px" if IS_KIOSK else ("70px" if IS_MOBILE else "70px")
-    hh = "80px" if IS_KIOSK else ("56px" if IS_MOBILE else "64px")
-    lh = "48px" if IS_KIOSK else ("36px" if IS_MOBILE else "40px")
+    fh = "90px" if IS_KIOSK else "70px"
+    hh = "80px" if IS_KIOSK else "64px"
+    lh = "48px" if IS_KIOSK else "40px"
 
     return f"""<script type="text/javascript">
     amazon_connect('customStyles', {{
@@ -59,18 +55,7 @@ def custom_styles_script() -> str:
         composer: {{ fontSize: '{WIDGET_FONT_SIZE}' }},
     }});
 
-    amazon_connect('customDisplayNames', {{
-        header: {{ headerMessage: '{_js_esc(WIDGET_HEADER)}' }},
-        transcript: {{
-            systemMessageDisplayName: '{_js_esc(WIDGET_BOT_NAME)}',
-            botMessageDisplayName: '{_js_esc(WIDGET_BOT_NAME)}',
-        }},
-        footer: {{
-            textInputPlaceholder: 'Describe what you need help with\\u2026',
-            endChatButtonText: 'End Chat',
-            closeChatButtonText: 'Close',
-        }},
-    }});
+
 </script>
 <style>
 /* Bold text throughout the widget */
@@ -113,21 +98,6 @@ def custom_styles_script() -> str:
     color: #dc2626 !important;
 }}
 </style>"""
-
-
-def auto_open_script() -> str:
-    """Auto-open the widget on page load (used by kiosk and mobile modes)."""
-    return """
-<script>
-(function() {
-    function tryOpen() {
-        var btn = document.getElementById('amazon-connect-open-widget-button');
-        if (btn) { btn.click(); }
-        else { setTimeout(tryOpen, 400); }
-    }
-    setTimeout(tryOpen, 1200);
-})();
-</script>"""
 
 
 def auto_reset_script() -> str:
@@ -207,7 +177,7 @@ def kiosk_landing_page() -> str:
         padding: 30px;
         color: white;
         text-align: center;
-        animation: float 20s infinite ease-in-out;
+        animation: float 12s infinite ease-in-out;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         transition: transform 0.3s ease, background 0.3s ease;
@@ -284,7 +254,7 @@ def kiosk_landing_page() -> str:
         position: absolute;
         border-radius: 50%;
         opacity: 0.6;
-        animation: bubbleFloat 15s infinite ease-in-out;
+        animation: bubbleFloat 8s infinite ease-in-out;
         pointer-events: none;
     }
 
@@ -311,7 +281,7 @@ def kiosk_landing_page() -> str:
         top: 15%;
         left: 25%;
         animation-delay: 0s;
-        animation-duration: 12s;
+        animation-duration: 7s;
     }
 
     .bubble-2 {
@@ -321,7 +291,7 @@ def kiosk_landing_page() -> str:
         top: 45%;
         left: 35%;
         animation-delay: 2s;
-        animation-duration: 16s;
+        animation-duration: 9s;
     }
 
     .bubble-3 {
@@ -331,7 +301,7 @@ def kiosk_landing_page() -> str:
         top: 75%;
         left: 15%;
         animation-delay: 4s;
-        animation-duration: 14s;
+        animation-duration: 8s;
     }
 
     .bubble-4 {
@@ -341,7 +311,7 @@ def kiosk_landing_page() -> str:
         top: 25%;
         left: 70%;
         animation-delay: 1s;
-        animation-duration: 13s;
+        animation-duration: 7.5s;
     }
 
     .bubble-5 {
@@ -351,7 +321,7 @@ def kiosk_landing_page() -> str:
         top: 60%;
         left: 75%;
         animation-delay: 3s;
-        animation-duration: 15s;
+        animation-duration: 8.5s;
     }
 
     .bubble-6 {
@@ -361,7 +331,7 @@ def kiosk_landing_page() -> str:
         top: 85%;
         left: 65%;
         animation-delay: 5s;
-        animation-duration: 17s;
+        animation-duration: 9.5s;
     }
 
     .bubble-7 {
@@ -371,7 +341,7 @@ def kiosk_landing_page() -> str:
         top: 10%;
         left: 45%;
         animation-delay: 2.5s;
-        animation-duration: 11s;
+        animation-duration: 6.5s;
     }
 
     .bubble-8 {
@@ -381,7 +351,7 @@ def kiosk_landing_page() -> str:
         top: 40%;
         left: 8%;
         animation-delay: 4.5s;
-        animation-duration: 18s;
+        animation-duration: 10s;
     }
 
     .bubble-9 {
@@ -391,7 +361,7 @@ def kiosk_landing_page() -> str:
         top: 50%;
         left: 85%;
         animation-delay: 1.5s;
-        animation-duration: 13.5s;
+        animation-duration: 7.5s;
     }
 
     .bubble-10 {
@@ -401,7 +371,7 @@ def kiosk_landing_page() -> str:
         top: 90%;
         left: 40%;
         animation-delay: 3.5s;
-        animation-duration: 14.5s;
+        animation-duration: 8s;
     }
 
     /* Logo/Branding Area */
@@ -414,11 +384,12 @@ def kiosk_landing_page() -> str:
     }
 
     .kiosk-logo {
-        font-size: 4rem;
+        font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 20px;
         text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         font-family: 'Open Sans', -apple-system, sans-serif;
+        line-height: 1.2;
     }
 
     .kiosk-tagline {
@@ -590,7 +561,7 @@ def kiosk_landing_page() -> str:
         </div>
 
         <div class="kiosk-branding">
-            <div class="kiosk-logo">211 Helpline</div>
+            <div class="kiosk-logo">""" + WIDGET_HEADER_HTML + """</div>
             <div class="kiosk-tagline">We're here to help you</div>
         </div>
     </div>
@@ -674,35 +645,6 @@ def kiosk_css() -> str:
 </style>"""
 
 
-def mobile_css() -> str:
-    """CSS styling for mobile mode (full-width, below header)."""
-    return """
-<style>
-    #amazon-connect-open-widget-button,
-    #amazon-connect-close-widget-button { display: none !important; }
-
-    #amazon-connect-widget-frame {
-        position: fixed !important;
-        top: 72px !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100vw !important;
-        height: calc(100vh - 72px) !important;
-        max-width: 100vw !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        z-index: 100 !important;
-    }
-    #amazon-connect-widget-frame:not(.show) {
-        display: block !important; opacity: 0; pointer-events: none;
-    }
-    #amazon-connect-widget-frame.show {
-        display: block !important; opacity: 1; pointer-events: auto;
-    }
-</style>"""
-
-
 def form_styling_css() -> str:
     """Placeholder for form styling - currently disabled."""
     return ""
@@ -726,11 +668,6 @@ def get_enhancements() -> list:
             kiosk_css(),
             kiosk_start_button_script(),
             auto_reset_script()
-        ])
-    elif IS_MOBILE:
-        enhancements.extend([
-            mobile_css(),
-            auto_open_script()
         ])
 
     return enhancements

@@ -1,0 +1,173 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Trident United Way Stability360 - Lambda Function with public Function URL
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  ViewMode:
+    Type: String
+    Default: standard
+    AllowedValues: [standard, kiosk]
+  CompanyName:
+    Type: String
+    Default: Trident United Way
+  ConnectUrl:
+    Type: String
+  ConnectInstanceId:
+    Type: String
+  ContactFlowId:
+    Type: String
+  WidgetId:
+    Type: String
+  SnippetId:
+    Type: String
+  SecurityKey:
+    Type: String
+    NoEcho: true
+  ColorNavy:
+    Type: String
+    Default: '#10264a'
+  ColorBlue:
+    Type: String
+    Default: '#1a3a6b'
+  ColorGold:
+    Type: String
+    Default: '#f5a623'
+  ColorGoldLight:
+    Type: String
+    Default: '#fbbf24'
+  WidgetHeader:
+    Type: String
+    Default: Trident United Way Stability360
+  WidgetBotName:
+    Type: String
+    Default: Stability360
+  ServiceName:
+    Type: String
+    Default: Stability360
+  ServiceTagline:
+    Type: String
+    Default: Your connection to care
+  CompanyTagline:
+    Type: String
+    Default: Serving Berkeley, Charleston & Dorchester Counties
+  FooterTagline:
+    Type: String
+    Default: Uniting the Tri-County to uplift families out of poverty.
+  LambdaMemory:
+    Type: Number
+    Default: 512
+  LambdaTimeout:
+    Type: Number
+    Default: 30
+
+Resources:
+  ChatWidgetRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub chat-widget-role-${Environment}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ChatWidgetPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - connect:StartChatContact
+                  - connect:DescribeContactFlow
+                Resource: '*'
+
+  ChatWidgetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub chat-widget-${Environment}
+      Runtime: python3.11
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt ChatWidgetRole.Arn
+      MemorySize: !Ref LambdaMemory
+      Timeout: !Ref LambdaTimeout
+      Description: !Sub Trident United Way Stability360 - ${Environment}
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          VIEW_MODE: !Ref ViewMode
+          COMPANY_NAME: !Ref CompanyName
+          CONNECT_URL: !Ref ConnectUrl
+          CONNECT_INSTANCE_ID: !Ref ConnectInstanceId
+          CONTACT_FLOW_ID: !Ref ContactFlowId
+          WIDGET_ID: !Ref WidgetId
+          SNIPPET_ID: !Ref SnippetId
+          SECURITY_KEY: !Ref SecurityKey
+          COLOR_NAVY: !Ref ColorNavy
+          COLOR_BLUE: !Ref ColorBlue
+          COLOR_GOLD: !Ref ColorGold
+          COLOR_GOLD_LIGHT: !Ref ColorGoldLight
+          WIDGET_HEADER: !Ref WidgetHeader
+          WIDGET_BOT_NAME: !Ref WidgetBotName
+          SERVICE_NAME: !Ref ServiceName
+          SERVICE_TAGLINE: !Ref ServiceTagline
+          COMPANY_TAGLINE: !Ref CompanyTagline
+          FOOTER_TAGLINE: !Ref FooterTagline
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+              return {
+                  "statusCode": 200,
+                  "headers": {"Content-Type": "text/html"},
+                  "body": "<h1>Deploy pending - run deploy.py to push code</h1>"
+              }
+      Tags:
+        - Key: Project
+          Value: Stability360
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  ChatWidgetFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      AuthType: NONE
+      TargetFunctionArn: !GetAtt ChatWidgetFunction.Arn
+      Cors:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+        AllowHeaders:
+          - '*'
+        MaxAge: 300
+
+  ChatWidgetPublicAccess:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ChatWidgetFunction.Arn
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+Outputs:
+  FunctionUrl:
+    Description: Public URL for the chat widget
+    Value: !GetAtt ChatWidgetFunctionUrl.FunctionUrl
+  FunctionName:
+    Description: Lambda function name
+    Value: !Ref ChatWidgetFunction
+  FunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt ChatWidgetFunction.Arn

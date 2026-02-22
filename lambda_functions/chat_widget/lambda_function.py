@@ -2,11 +2,10 @@
 lambda_function.py — AWS Lambda entry point.
 ─────────────────────────────────────────────
 Mode priority:
-  1. ?mode=standard|kiosk|mobile  (URL query string — explicit choice)
-  2. VIEW_MODE env var at deploy   (standard|kiosk|mobile)
+  1. ?mode=standard|kiosk  (URL query string — explicit choice)
+  2. VIEW_MODE env var at deploy   (standard|kiosk)
   3. Legacy KIOSK_MODE=true env    (maps to kiosk)
-  4. Auto-detect mobile via User-Agent header
-  5. Defaults to standard
+  4. Defaults to standard
 
 Logs every request's resolved view mode + source to CloudWatch.
 """
@@ -14,20 +13,12 @@ Logs every request's resolved view mode + source to CloudWatch.
 import json
 import logging
 import os
-import re
 import sys
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-_MOBILE_RE = re.compile(
-    r"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet",
-    re.IGNORECASE,
-)
-
 # Snapshot the ORIGINAL deploy-time env vars once at cold start.
-# This prevents previous invocations' os.environ writes from polluting
-# the next invocation's mode resolution.
 _DEPLOY_VIEW_MODE = os.environ.get("VIEW_MODE", "").lower().strip()
 _DEPLOY_KIOSK     = os.environ.get("KIOSK_MODE", "").lower().strip() in ("true", "1", "yes")
 
@@ -38,24 +29,18 @@ def _resolve_mode(event: dict) -> tuple:
     # 1. Explicit query string — always wins
     qs = event.get("queryStringParameters") or {}
     qm = qs.get("mode", "").lower()
-    if qm in ("standard", "kiosk", "mobile"):
+    if qm in ("standard", "kiosk"):
         return qm, "query_string"
 
     # 2. Deploy-time VIEW_MODE env
-    if _DEPLOY_VIEW_MODE in ("standard", "kiosk", "mobile"):
+    if _DEPLOY_VIEW_MODE in ("standard", "kiosk"):
         return _DEPLOY_VIEW_MODE, "env_VIEW_MODE"
 
     # 3. Legacy KIOSK_MODE env
     if _DEPLOY_KIOSK:
         return "kiosk", "env_KIOSK_MODE"
 
-    # 4. Auto-detect from User-Agent
-    headers = event.get("headers") or {}
-    ua = headers.get("user-agent") or headers.get("User-Agent") or ""
-    if _MOBILE_RE.search(ua):
-        return "mobile", "auto_detect_mobile"
-
-    # 5. Default
+    # 4. Default
     return "standard", "default"
 
 

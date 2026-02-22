@@ -42,7 +42,14 @@
       "Bash(MSYS_NO_PATHCONV=1 aws logs tail:*)",
       "Bash(aws lambda get-function:*)",
       "Bash(aws connect describe-contact-flow:*)",
-      "Bash(aws connect list-integration-associations:*)"
+      "Bash(aws connect list-integration-associations:*)",
+      "Bash(grep:*)",
+      "Bash(aws cloudformation describe-stack-events:*)",
+      "Bash(aws cloudformation delete-stack:*)",
+      "Bash(aws cloudformation wait:*)",
+      "WebFetch(domain:www.sc211.org)",
+      "WebFetch(domain:www.uwasc.org)",
+      "WebFetch(domain:www.tuw.org)"
     ]
   }
 }
