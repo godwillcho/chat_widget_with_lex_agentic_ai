@@ -161,6 +161,13 @@ Resources:
       Principal: '*'
       FunctionUrlAuthType: NONE
 
+  ChatWidgetPublicInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ChatWidgetFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: '*'
+
 Outputs:
   FunctionUrl:
     Description: Public URL for the chat widget

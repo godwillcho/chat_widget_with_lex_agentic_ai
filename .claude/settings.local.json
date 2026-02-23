@@ -49,7 +49,9 @@
       "Bash(aws cloudformation wait:*)",
       "WebFetch(domain:www.sc211.org)",
       "WebFetch(domain:www.uwasc.org)",
-      "WebFetch(domain:www.tuw.org)"
+      "WebFetch(domain:www.tuw.org)",
+      "Bash(git push:*)",
+      "Bash(aws lambda get-policy:*)"
     ]
   }
 }
