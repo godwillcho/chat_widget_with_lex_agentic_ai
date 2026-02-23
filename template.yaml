@@ -12,19 +12,6 @@ Parameters:
   CompanyName:
     Type: String
     Default: Trident United Way
-  ConnectUrl:
-    Type: String
-  ConnectInstanceId:
-    Type: String
-  ContactFlowId:
-    Type: String
-  WidgetId:
-    Type: String
-  SnippetId:
-    Type: String
-  SecurityKey:
-    Type: String
-    NoEcho: true
   ColorNavy:
     Type: String
     Default: '#10264a'
@@ -85,11 +72,6 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: '*'
-              - Effect: Allow
-                Action:
-                  - connect:StartChatContact
-                  - connect:DescribeContactFlow
-                Resource: '*'
 
   ChatWidgetFunction:
     Type: AWS::Lambda::Function
@@ -106,12 +88,6 @@ Resources:
           ENVIRONMENT: !Ref Environment
           VIEW_MODE: !Ref ViewMode
           COMPANY_NAME: !Ref CompanyName
-          CONNECT_URL: !Ref ConnectUrl
-          CONNECT_INSTANCE_ID: !Ref ConnectInstanceId
-          CONTACT_FLOW_ID: !Ref ContactFlowId
-          WIDGET_ID: !Ref WidgetId
-          SNIPPET_ID: !Ref SnippetId
-          SECURITY_KEY: !Ref SecurityKey
           COLOR_NAVY: !Ref ColorNavy
           COLOR_BLUE: !Ref ColorBlue
           COLOR_GOLD: !Ref ColorGold

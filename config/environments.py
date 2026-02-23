@@ -18,13 +18,6 @@ ENVIRONMENTS = {
             "ENVIRONMENT": "dev",
             "VIEW_MODE": "standard",  # Options: "standard", "kiosk" (override via URL: ?mode=kiosk)
             "COMPANY_NAME": "Trident United Way",
-            # ─── Amazon Connect Credentials ───────────────────────
-            "CONNECT_URL": "https://nextgencxsolutions.my.connect.aws",
-            "CONNECT_INSTANCE_ID": "e75a053a-60c7-45f3-83f7-a24df6d3b52d",
-            "CONTACT_FLOW_ID": "b1cc0b5a-09d5-4c50-ad1f-5b9b55f75336",
-            "WIDGET_ID": "497c0ff9-3611-45dc-a56d-21aa65f76969",
-            "SNIPPET_ID": "QVFJREFIaEdEc0hWQU9TcWFkUjZBZVY0bDJ6cnBCUVdIZ0EyUC9OWkxRSmRQWGEzY0FGMjJzcWp0L045Qk5ZNmFQYXQweXpHQUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNQUZkTHdhcERSK3MrcVZYYUFnRVFnQ3Y3dUdLYjc4K0RERnc2Nzl5RHVHN1Znc3dybVpwUDIzUkdIVGI3bDNSZEpHS2NDZThyaUpnWGE2Vmw6OlZyU3UrQmFJdFZ5REhNeUplVEJUK1JZd2dwTmV2UkFQVHJGSXU1SkRDSUtpTjF1UkNERVd0K1A5L25zNTh6Q0lYcVpvN3Jib2lqWU5BOWRGVThiUE8reDBVK0V0SmlGRERSVEllRjEzTGlKb3lBQ24wd1pKVnoxQWxFQlJETWJHOUN1U1FhS05sdWNNaFdDemJQN3dZNzA2eGI4ZmEzbz0=",
-            "SECURITY_KEY": "Z+I+2RtFRc0fj0Nx9CgRBQiPSChzRQnFQ4wBL2N3WXg=",
             # ─── Theme Colors ─────────────────────────────────────
             "COLOR_NAVY": "#10264a",
             "COLOR_BLUE": "#1a3a6b",

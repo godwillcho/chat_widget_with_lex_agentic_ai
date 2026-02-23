@@ -25,11 +25,6 @@ COMPANY_NAME      = _env("COMPANY_NAME", "Trident United Way")
 COMPANY_NAME_HTML = html_mod.escape(COMPANY_NAME)
 COMPANY_NAME_JS   = COMPANY_NAME.replace("\\", "\\\\").replace("'", "\\'")
 
-# ── Amazon Connect ──
-CONNECT_URL  = _env("CONNECT_URL", "https://nextgencxsolutions.my.connect.aws")
-WIDGET_ID    = _env("WIDGET_ID", "497c0ff9-3611-45dc-a56d-21aa65f76969")
-SNIPPET_ID   = _env("SNIPPET_ID", "")
-
 # ── Theme colors ──
 COLOR_NAVY      = _env("COLOR_NAVY", "#10264a")
 COLOR_BLUE      = _env("COLOR_BLUE", "#1a3a6b")
