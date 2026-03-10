@@ -1,0 +1,18 @@
+{
+    "timestamp": "2026-03-10T06:44:25Z",
+    "log_level": "ERROR",
+    "errorMessage": "name 're' is not defined",
+    "errorType": "NameError",
+    "requestId": "",
+    "stackTrace": [
+        "  File \"/var/lang/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n",
+        "  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n",
+        "  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n",
+        "  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n",
+        "  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n",
+        "  File \"<frozen importlib._bootstrap_external>\", line 1023, in exec_module\n",
+        "  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n",
+        "  File \"/var/task/index.py\", line 31, in <module>\n    from task_manager import handle_disposition_automation\n",
+        "  File \"/var/task/task_manager.py\", line 36, in <module>\n    UUID_RE = re.compile(\n"
+    ]
+}
